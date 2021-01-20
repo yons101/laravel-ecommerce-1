@@ -47,9 +47,6 @@ class CartController extends Controller
             )
             ->get();
 
-
-
-
         $info =  DB::table('users')
             ->join('carts', 'users.id', 'carts.user_id')
             ->join('products', 'products.id', 'carts.product_id')
@@ -72,39 +69,49 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
-        $product = Product::find($request->id);
-        Auth::user()->cart->products()->attach($product);
+        $product_id = DB::table('carts')
+            ->where('product_id', $request->id)
+            ->get();
+        if ($product_id->isEmpty()) {
+            Cart::create([
+                'user_id' => Auth::user()->id,
+                'product_id' => $request->id,
+                'quantity' => 1,
+            ]);
+        } else {
+            DB::table('carts')
+                ->where('user_id', Auth::user()->id)
+                ->where('product_id', $request->id)
+                ->update([
+                    'quantity' => DB::raw('quantity + 1'),
+                ]);
+        }
+
+
 
         return redirect()->route('cart.index')->with('success', 'Item Was Added To Your Cart');
     }
 
     public function update(Request $request, $id)
     {
-        $product = Product::find($request->id);
 
-        $qtyInDB = Auth::user()->cart->products()->where('product_id', $product->id)->count();
-        $requestedQty = $request->qty;
+        if ($request->qty < 0) {
+        } else if ($request->qty == 0) {
+            DB::table('carts')
+                ->where('product_id', $request->id)
+                ->where('user_id', Auth::user()->id)
+                ->delete();
+        } else {
 
-        $x = $qtyInDB - $requestedQty;
-
-
-        if ($x >= 1) {
-            //ex : qtyInDB 4 and $requestedQty 2 => this query will run 2 times
-            DB::delete('delete from cart_product where product_id = ? order by id desc limit ?', [$product->id, $x]);
-        } else if ($x < 0) {
-
-            //ex : nqtyInDB 2 and $requestedQty 4 => this query will run 2 times
-
-            for ($i = 0; $i < abs($x); $i++) {
-                Auth::user()->cart->products()->attach($product);
-            }
-        } else if ($requestedQty == 0) {
-            Auth::user()->cart->products()->detach($product);
+            DB::table('carts')
+                ->where('user_id', Auth::user()->id)
+                ->where('product_id', $request->id)
+                ->update([
+                    'quantity' => $request->qty
+                ]);
         }
 
-        // dd($requestedQty);
 
-        // Auth::user()->cart->products()->detach($product);
         return redirect()->back();
     }
 
@@ -116,7 +123,10 @@ class CartController extends Controller
      */
     public function destroy($rowId)
     {
-        DB::table('carts')->where('product_id', $rowId)->delete();
+        DB::table('carts')
+            ->where('product_id', $rowId)
+            ->where('user_id', Auth::user()->id)
+            ->delete();
 
         return redirect()->route('cart.index')->with('success', 'The Item Has Been Removed From Your Cart!');
     }
@@ -124,7 +134,9 @@ class CartController extends Controller
     //Empty the cart
     public function empty()
     {
-        DB::table('carts')->delete();
+        DB::table('carts')
+            ->where('user_id', Auth::user()->id)
+            ->delete();
         return redirect()->route('cart.index')->with('success', 'Your Cart Has Been Emptied!');
     }
 }
