@@ -25,19 +25,35 @@ class CartController extends Controller
     public function index()
     {
 
+        $products = DB::table('users')
+        ->join('carts', 'users.id', '=', 'carts.user_id')
+        ->join('products', 'products.id', '=', 'carts.product_id')
+        ->where('users.id' ,  '=', Auth::user()->id)
+        ->select('products.id', 'products.title', 'products.slug', 'products.price', 'products.image', DB::raw('COUNT(products.id) as qte, SUM(products.price) as prix'))
+        ->groupBy('products.id', 'products.title', 'products.slug', 'products.price', 'products.image')
+        ->get();
+        
+
+        $count = DB::table('users')->join('carts', 'users.id', '=',
+        'carts.user_id')->join('products', 'products.id', '=',
+        'carts.product_id')->where('users.id', '=',
+        Auth::user()->id)->select('products.*')->count();
+
+
+        $totalPrice = DB::table('users')
+        ->join('carts', 'users.id', '=', 'carts.user_id')
+        ->join('products', 'products.id', '=', 'carts.product_id')
+        ->where('users.id' ,  '=', Auth::user()->id)
+        ->sum('price');
+
         
         if (Auth::user()->role == "admin") {
             return redirect()->route('productmanager.index');
         }
    
-        
-        $products = Auth::user()->cart->products->groupBy('id');
-
-        $totalPrice = Auth::user()->cart->products()->sum('price');
-
         $lastId = 0;
 
-        return view('cart', compact(['lastId', 'products', 'totalPrice']));
+        return view('cart', compact(['lastId', 'products', 'totalPrice', 'count']));
     }
 
 
@@ -91,8 +107,9 @@ class CartController extends Controller
      */
     public function destroy($rowId)
     {
-        $product = Product::find($rowId);
-        Auth::user()->cart->products()->detach($product);
+
+        DB::table('carts')->where('product_id', $rowId)->delete();
+
         return redirect()->route('cart.index')->with('success', 'The Item Has Been Removed From Your Cart!');
     }
 

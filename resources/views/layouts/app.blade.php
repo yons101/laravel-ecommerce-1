@@ -59,18 +59,19 @@
                 <div class="container"><a class="navbar-brand" href="{{ url('/') }}"><i
                             class="fab fa-apple logo"></i>Apple101</a><button data-toggle="collapse"
                         class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle
-                            {{-- style="transform: rotate(90deg);" --}}
+                            {{-- style="transform: rotate(90deg);"
+                            --}}
                             navigation</span><span class="navbar-toggler-icon"></span></button>
                     <div class="collapse navbar-collapse" id="navcol-1">
                         <ul class="nav navbar-nav mx-auto">
                             <li class="nav-item" role="presentation"><a class="nav-link"
-                                    href="{{route('category.show', 'iphone')}}">iPhone</a></li>
+                                    href="{{ route('category.show', 'iphone') }}">iPhone</a></li>
 
                             <li class="nav-item" role="presentation"><a class="nav-link"
-                                    href="{{route('category.show', 'mac')}}">Mac</a></li>
+                                    href="{{ route('category.show', 'mac') }}">Mac</a></li>
 
                             <li class="nav-item" role="presentation"><a class="nav-link"
-                                    href="{{route('category.show', 'ipad')}}">iPad</a></li>
+                                    href="{{ route('category.show', 'ipad') }}">iPad</a></li>
 
 
                         </ul>
@@ -78,40 +79,89 @@
 
 
                             @guest
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" href="{{ route('login') }}">
-                                    Login
-                                </a>
-                            </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" href="{{ route('login') }}">
+                                        Login
+                                    </a>
+                                </li>
 
 
-                            @if (Route::has('register'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                            </li>
-                            @endif
+                                @if (Route::has('register'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    </li>
+                                @endif
                             @else
 
 
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->username }} <span class="caret"></span>
-                                </a>
+                                <li class="nav-item dropdown">
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        {{ Auth::user()->username }} <span class="caret"></span>
+                                    </a>
 
-                                {{-- Check if the user is a user --}}
-                                @if (Auth::user()->role == "user")
+                                    {{-- Check if the user is a user
+                                    --}}
+                                    @if (Auth::user()->role == 'user')
+
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                                                Profile
+                                            </a>
+                                            <a class="dropdown-item" href="/orders">
+                                                Orders
+                                            </a>
+                                            <a class="dropdown-item" href="{{ route('logout') }}"
+                                                onclick="event.preventDefault();
+                                                                                                                            document.getElementById('logout-form').submit();">
+                                                {{ __('Logout') }}
+                                            </a>
+
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
+                                        </div>
+                                </li>
+
+                                <li class="nav-item" role="presentation">
+                                    {{-- d-flex align-items-center
+                                    --}}
+                                    <a class="nav-link" href="{{ route('cart.index') }}">
+                                        <i class="fas fa-shopping-cart mr-1"></i>
+
+                                        @if (Auth::user() != null)
+                                            @php
+                                            $count = DB::table('users')->join('carts', 'users.id', '=',
+                                            'carts.user_id')->join('products', 'products.id', '=',
+                                            'carts.product_id')->where('users.id', '=',
+                                            Auth::user()->id)->select('products.*')->count();
+                                            @endphp
+                                            {{ $count }}
+                                        @endif
+                                    </a>
+
+                                </li>
+
+                                {{--
+                                Check if the user is an admin
+                                --}}
+                            @else
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{route('profile.index')}}">
-                                        Profile
+                                    <a class="dropdown-item" href="{{ route('productmanager.index') }}">
+                                        Product Manager
                                     </a>
-                                    <a class="dropdown-item" href="/orders">
-                                        Orders
+                                    <a class="dropdown-item" href="{{ route('usermanager.index') }}">
+                                        Users Manager
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('ordermanager.index') }}">
+                                        Orders Manager
+                                    </a>
+
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
-                                                                        document.getElementById('logout-form').submit();">
+                                                                                        document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
@@ -120,46 +170,7 @@
                                         @csrf
                                     </form>
                                 </div>
-                            </li>
-
-                            <li class="nav-item" role="presentation">
-                                {{-- d-flex align-items-center --}}
-                                <a class="nav-link" href="{{ route('cart.index') }}">
-                                    <i class="fas fa-shopping-cart mr-1"></i>
-
-                                    @if(Auth::user()->cart->products->count()>0)
-                                    <span>{{Auth::user()->cart->products->count()}}</span>
-
-                                    @endif
-                                </a>
-
-                            </li>
-
-                            {{-- Check if the user is an admin --}}
-                            @else
-
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{route('productmanager.index')}}">
-                                    Product Manager
-                                </a>
-                                <a class="dropdown-item" href="{{route('usermanager.index')}}">
-                                    Users Manager
-                                </a>
-                                <a class="dropdown-item" href="{{route('ordermanager.index')}}">
-                                    Orders Manager
-                                </a>
-
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                    document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                    style="display: none;">
-                                    @csrf
-                                </form>
-                            </div>
-                            @endif
+                                @endif
                             @endguest
 
                         </ul>
@@ -193,7 +204,7 @@
                     <p class="copyright">Apple101 © 2020</p>
                 </div>
             </footer>
-    </div>
+        </div>
         <script src="assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/js/bs-init.js"></script>

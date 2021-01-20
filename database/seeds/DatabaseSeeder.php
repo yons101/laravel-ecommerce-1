@@ -38,33 +38,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        DB::table('roles')->insert(
-            [
-                [
-                    'name' => 'admin'
-                ],
-                [
-                    'name' => 'user'
-                ]
-            ]
-        );
-
-        DB::table('role_user')->insert(
-            [
-                [
-                    'user_id' => 1,
-                    'role_id' => 1,
-                ],
-                [
-                    'user_id' => 2,
-                    'role_id' => 2,
-                ],
-                [
-                    'user_id' => 3,
-                    'role_id' => 2,
-                ]
-            ]
-        );
 
         DB::table('profiles')->insert(
             [
@@ -93,6 +66,15 @@ class DatabaseSeeder extends Seeder
             [
                 [
                     'user_id' => 1, //admin
+                    'product_id' => 1,
+                ],
+                [
+                    'user_id' => 1, //admin
+                    'product_id' => 2,
+                ],
+                [
+                    'user_id' => 1, //admin
+                    'product_id' =>3,
                 ],
                 [
                     'user_id' => 2,
@@ -103,50 +85,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        DB::table('cart_product')->insert(
-            [
-
-
-                //user1's cart
-
-
-                [
-                    'cart_id' => 2,
-                    'product_id' => 4,
-                ],
-                [
-                    'cart_id' => 2,
-                    'product_id' => 4,
-                ],
-                [
-                    'cart_id' => 2,
-                    'product_id' => 4,
-                ],
-
-                //user2's cart
-
-                [
-                    'cart_id' => 3,
-                    'product_id' => 1,
-                ],
-                [
-                    'cart_id' => 3,
-                    'product_id' => 2,
-                ],
-                [
-                    'cart_id' => 3,
-                    'product_id' => 3,
-                ],
-                [
-                    'cart_id' => 3,
-                    'product_id' => 3,
-                ],
-                [
-                    'cart_id' => 3,
-                    'product_id' => 3,
-                ],
-
-            ]
-        );
+      
     }
 }
