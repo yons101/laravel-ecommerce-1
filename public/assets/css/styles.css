@@ -1,0 +1,120 @@
+html {
+
+    scroll-behavior: smooth;
+}
+
+.cat-list {
+    justify-content: space-between;
+}
+
+
+
+.cat-list {
+    padding-top: 1rem;
+    display: flex;
+}
+
+
+
+
+.payment {
+    order: 1;
+}
+
+
+body {
+    font-family: Nunito, sans-serif;
+}
+
+.container.main-container {
+    padding: 4rem 0rem;
+}
+
+.logo {
+    font-size: 22px;
+    margin-right: 5px;
+}
+
+.nav-link i {
+    color: black;
+}
+
+.navbar {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    /*border-radius: 30px;*/
+}
+
+.product-img {
+    margin: 5% !important;
+    width: 90% !important;
+}
+
+
+
+
+
+
+.carousel-item {
+    height: 22vh;
+}
+
+
+.carousel-item img {
+    height: 100%;
+}
+
+.copyright {
+    text-align: left;
+}
+
+.card:hover {
+    color: #8a8a8a;
+}
+
+body,
+.footer-basic,
+.navbar {
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cdcdcd' fill-opacity='0.14'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Bootstrap Pagination Reset */
+
+
+.page-link {
+    color: #222222 !important;
+}
+
+.page-item.active .page-link {
+    color: #fff !important;
+
+    background-color: #222222 !important;
+    border-color: #222222 !important;
+}
+
+
+@media (min-width: 576px) {
+    .carousel-item {
+        height: 40vh;
+    }
+}
+
+@media (min-width: 768px) {
+    .carousel-item {
+        height: 60vh;
+    }
+
+    .payment {
+        order: 0;
+    }
+
+    .cat-list {
+        flex-direction: column;
+    }
+
+    .cat-list {
+        padding-top: 1rem;
+        display: block;
+    }
+}
