@@ -24,36 +24,47 @@ class CartController extends Controller
      */
     public function index()
     {
-
         $products = DB::table('users')
-        ->join('carts', 'users.id', '=', 'carts.user_id')
-        ->join('products', 'products.id', '=', 'carts.product_id')
-        ->where('users.id' ,  '=', Auth::user()->id)
-        ->select('products.id', 'products.title', 'products.slug', 'products.price', 'products.image', DB::raw('COUNT(products.id) as qte, SUM(products.price) as prix'))
-        ->groupBy('products.id', 'products.title', 'products.slug', 'products.price', 'products.image')
-        ->get();
-        
+            ->join('carts', 'users.id', 'carts.user_id')
+            ->join('products', 'products.id', 'carts.product_id')
+            ->where('users.id',  Auth::user()->id)
+            ->select(
+                'products.id',
+                'products.title',
+                'products.slug',
+                'products.price',
+                'products.image',
+                'carts.quantity',
+                DB::raw('(products.price * carts.quantity) as price')
+            )
+            ->groupBy(
+                'products.id',
+                'products.title',
+                'products.slug',
+                'products.price',
+                'products.image',
+                'carts.quantity'
+            )
+            ->get();
 
-        $count = DB::table('users')->join('carts', 'users.id', '=',
-        'carts.user_id')->join('products', 'products.id', '=',
-        'carts.product_id')->where('users.id', '=',
-        Auth::user()->id)->select('products.*')->count();
 
 
-        $totalPrice = DB::table('users')
-        ->join('carts', 'users.id', '=', 'carts.user_id')
-        ->join('products', 'products.id', '=', 'carts.product_id')
-        ->where('users.id' ,  '=', Auth::user()->id)
-        ->sum('price');
 
-        
+        $info =  DB::table('users')
+            ->join('carts', 'users.id', 'carts.user_id')
+            ->join('products', 'products.id', 'carts.product_id')
+            ->where('users.id', Auth::user()->id)
+            ->select(DB::raw('SUM(carts.quantity) as quantity, SUM(products.price * carts.quantity) as totalPrice'))
+            ->get();
+
+
         if (Auth::user()->role == "admin") {
             return redirect()->route('productmanager.index');
         }
-   
+
         $lastId = 0;
 
-        return view('cart', compact(['lastId', 'products', 'totalPrice', 'count']));
+        return view('cart', compact(['lastId', 'products', 'info']));
     }
 
 
@@ -61,8 +72,6 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
-
-
         $product = Product::find($request->id);
         Auth::user()->cart->products()->attach($product);
 
@@ -107,7 +116,6 @@ class CartController extends Controller
      */
     public function destroy($rowId)
     {
-
         DB::table('carts')->where('product_id', $rowId)->delete();
 
         return redirect()->route('cart.index')->with('success', 'The Item Has Been Removed From Your Cart!');
@@ -116,7 +124,7 @@ class CartController extends Controller
     //Empty the cart
     public function empty()
     {
-        Auth::user()->cart->products()->detach();
+        DB::table('carts')->delete();
         return redirect()->route('cart.index')->with('success', 'Your Cart Has Been Emptied!');
     }
 }

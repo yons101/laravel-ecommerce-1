@@ -65,22 +65,20 @@ class DatabaseSeeder extends Seeder
         DB::table('carts')->insert(
             [
                 [
-                    'user_id' => 1, //admin
+                    'user_id' => 2,
                     'product_id' => 1,
-                ],
-                [
-                    'user_id' => 1, //admin
-                    'product_id' => 2,
-                ],
-                [
-                    'user_id' => 1, //admin
-                    'product_id' =>3,
+                    'quantity' => 4,
                 ],
                 [
                     'user_id' => 2,
+                    'product_id' => 3,
+                    'quantity' => 2,
+
                 ],
                 [
-                    'user_id' => 3,
+                    'user_id' => 1,
+                    'product_id' =>3,
+                    'quantity' => 2,
                 ]
             ]
         );

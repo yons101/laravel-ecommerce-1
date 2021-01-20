@@ -33,7 +33,7 @@
         <div class="row mt-5">
             <div class="col-12 col-md-8">
 
-                <h3>You have {{ $count }} item(s) in your cart</h3>
+                <h3>You have {{ $info[0]->quantity }} item(s) in your cart</h3>
 
                 <div class="d-flex flex-column p-5">
                     @if ($products->isNotEmpty())
@@ -49,7 +49,7 @@
                             </thead>
                             <tbody>
                                 {{-- Products that have the same id, used for
-                                quantiy--}}
+                                quantity--}}
                                 @foreach ($products as $item)
 
 
@@ -77,7 +77,7 @@
                                                     class="d-inline-block m-0">
                                                     @csrf
                                                     @method('PUT')
-                                                    <input class="" type="number" name="qty" value="{{ $item->qte }}"
+                                                    <input class="" type="number" name="qty" value="{{ $item->quantity }}"
                                                         style="width:3rem;" onchange="show({{ $item->id }})">
                                                     <input type="hidden" name="id" value="{{ $item->id }}">
                                                     <button id="{{ 'confirm_' . $item->id }}" class="btn p-0 m-0"
@@ -85,7 +85,7 @@
                                                 </form>
                                             </td>
 
-                                            <td class="align-middle">{{ $item->prix }} DH</td>
+                                            <td class="align-middle">{{ $item->price }} DH</td>
 
                                             <td class="align-middle">
                                                 <form class="m-0" action="{{ route('cart.destroy', $item->id) }}"
@@ -118,7 +118,7 @@
                 <div class="mt-5 d-flex justify-content-between h2">
                     <span>Total</span>
                     <div>
-                        <span class="mr-1">{{ $totalPrice }}</span>
+                        <span class="mr-1">{{ $info[0]->totalPrice }}</span>
                         <span>DH</span>
                     </div>
                 </div>

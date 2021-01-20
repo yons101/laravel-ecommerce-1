@@ -113,7 +113,7 @@
                                             </a>
                                             <a class="dropdown-item" href="{{ route('logout') }}"
                                                 onclick="event.preventDefault();
-                                                                                                                            document.getElementById('logout-form').submit();">
+                                                                                                                                        document.getElementById('logout-form').submit();">
                                                 {{ __('Logout') }}
                                             </a>
 
@@ -131,13 +131,8 @@
                                         <i class="fas fa-shopping-cart mr-1"></i>
 
                                         @if (Auth::user() != null)
-                                            @php
-                                            $count = DB::table('users')->join('carts', 'users.id', '=',
-                                            'carts.user_id')->join('products', 'products.id', '=',
-                                            'carts.product_id')->where('users.id', '=',
-                                            Auth::user()->id)->select('products.*')->count();
-                                            @endphp
-                                            {{ $count }}
+                                            {{ DB::table('users')->join('carts', 'users.id', 'carts.user_id')->join('products', 'products.id', 'carts.product_id')->where('users.id', Auth::user()->id)->select(DB::raw('SUM(carts.quantity) as quantity'))->pluck('quantity')[0] }}
+
                                         @endif
                                     </a>
 
@@ -161,7 +156,7 @@
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
-                                                                                        document.getElementById('logout-form').submit();">
+                                                                                                    document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
