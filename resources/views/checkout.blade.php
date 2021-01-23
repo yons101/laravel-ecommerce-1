@@ -188,7 +188,7 @@
                     <div class="form-group row">
                         <div class="col-md-12">
                             <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror"
-                                name="amount" required placeholder="Amount" value="{{$totalPrice}}">
+                                name="amount" required placeholder="Amount" value="{{$info[0]->totalPrice}}">
                             @error('amount')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -224,9 +224,8 @@
             </thead>
             <tbody>
                 {{-- Products that have the same id, used for quantiy--}}
-                @foreach($products as $row)
+                @foreach($products as $item)
 
-                @foreach ($row as $item)
 
                 @if ($item->id != $lastId)
 
@@ -248,22 +247,21 @@
                     </td>
 
                     <td class="align-middle">
-                        <span>{{count($row)}}</span>
+                        <span>{{$item->quantity}}</span>
                     </td>
 
-                    <td class="align-middle">{{$item->price * count($row)}} DH</td>
+                    <td class="align-middle">{{$item->price}} DH</td>
 
                 </tr>
                 @endif
 
-                @endforeach
 
                 @endforeach
                 <tr>
                     <td colspan="4"></td>
                 </tr>
                 <tr>
-                    <td colspan="2" class=""><b class="h2">Total : {{$totalPrice}} DH</b></td>
+                    <td colspan="2" class=""><b class="h2">Total : {{$info[0]->totalPrice}} DH</b></td>
                     <td colspan="2" class="">
                         <form action="{{route('cart.index')}}" method="get">
                             @csrf

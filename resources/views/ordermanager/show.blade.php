@@ -3,59 +3,59 @@
 
 @section('content')
 
-@if(session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-<form action="{{route('ordermanager.update', $order->id)}}" method="POST">
-    <div class="table-responsive">
-        <table class="table table-striped w-50 mx-auto">
-            <tbody>
-                @csrf
-                @method('PUT')
-                <tr>
-                    <td>Order ID</td>
-                    <td class="text-right">{{$order->id}}</td>
-                </tr>
-                <tr>
-                    <td>Order Price</td>
-                    <td class="text-right">{{$order->products()->sum('price')}} DH</td>
-                </tr>
+    <form action="{{ route('ordermanager.update', $order->id) }}" method="POST">
+        <div class="table-responsive">
+            <table class="table table-striped w-75 mx-auto">
+                <tbody>
+                    @csrf
+                    @method('PUT')
+                    <tr>
+                        <td>Order ID</td>
+                        <td class="text-right">{{ $order->id }}</td>
+                    </tr>
+                    <tr>
+                        <td>Order Price</td>
+                        <td class="text-right">{{ $order->products()->sum('price') }} DH</td>
+                    </tr>
 
-                <tr>
-                    <td>Shipped?</td>
-                    <td class="text-right">
-                        <select name='is_shipped' onchange='this.form.submit()'>
+                    <tr>
+                        <td>Shipped?</td>
+                        <td class="text-right">
+                            <select name='is_shipped' onchange='this.form.submit()'>
 
-                            @if ($order->is_shipped)
-                            <option value="1" selected>Yes</option>
-                            <option value="0">No</option>
-                            @else
-                            <option value="1">Yes</option>
-                            <option value="0" selected>No</option>
-                            @endif
+                                @if ($order->is_shipped)
+                                    <option value="1" selected>Yes</option>
+                                    <option value="0">No</option>
+                                @else
+                                    <option value="1">Yes</option>
+                                    <option value="0" selected>No</option>
+                                @endif
 
-                        </select>
-                        <noscript><input type="submit" value="Submit"></noscript>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Buyers Name</td>
-                    <td class="text-right">{{$order->user->profile->fullname}}</td>
-                </tr>
-                <tr>
-                    <td>Buyer's Phone Number</td>
-                    <td class="text-right">{{$order->user->profile->phone}}</td>
-                </tr>
-                <tr>
-                    <td>Buyer's Address</td>
-                    <td class="text-right">{{$order->user->profile->address}}</td>
-                </tr>
-            </tbody>
-        </table>
+                            </select>
+                            <noscript><input type="submit" value="Submit"></noscript>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Buyers Name</td>
+                        <td class="text-right">{{ $order->user->profile->fullname }}</td>
+                    </tr>
+                    <tr>
+                        <td>Buyer's Phone Number</td>
+                        <td class="text-right">{{ $order->user->profile->phone }}</td>
+                    </tr>
+                    <tr>
+                        <td>Buyer's Address</td>
+                        <td class="text-right">{{ $order->user->profile->address }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-    </div>
-</form>
+        </div>
+    </form>
 @endsection

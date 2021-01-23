@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Order;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
@@ -15,13 +16,44 @@ class CheckoutController extends Controller
 
     public function index()
     {
-        $products = Auth::user()->cart->products()->get()->groupBy('id');
-        $totalPrice = Auth::user()->cart->products()->sum('price');
+        $products = DB::table('users')
+            ->join('carts', 'users.id', 'carts.user_id')
+            ->join('products', 'products.id', 'carts.product_id')
+            ->where('users.id',  Auth::user()->id)
+            ->select(
+                'products.id',
+                'products.title',
+                'products.slug',
+                'products.price',
+                'products.image',
+                'carts.quantity',
+                DB::raw('(products.price * carts.quantity) as price')
+            )
+            ->groupBy(
+                'products.id',
+                'products.title',
+                'products.slug',
+                'products.price',
+                'products.image',
+                'carts.quantity'
+            )
+            ->get();
 
-        // dd($products, $totalPrice);
+        $info =  DB::table('users')
+            ->join('carts', 'users.id', 'carts.user_id')
+            ->join('products', 'products.id', 'carts.product_id')
+            ->where('users.id', Auth::user()->id)
+            ->select(DB::raw('SUM(carts.quantity) as quantity, SUM(products.price * carts.quantity) as totalPrice'))
+            ->get();
+
+
+        if (Auth::user()->role == "admin") {
+            return redirect()->route('productmanager.index');
+        }
+
         $lastId = 0;
 
-        return view('checkout', compact(['lastId', 'products', 'totalPrice']));
+        return view('checkout', compact(['lastId', 'products', 'info']));
     }
 
 
