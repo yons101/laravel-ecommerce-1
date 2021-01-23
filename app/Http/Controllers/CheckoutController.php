@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use Exception;
+use App\Shipping;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -91,23 +92,30 @@ class CheckoutController extends Controller
                 ],
             ]);
 
+            $data = [
+                'name' => $request->name,
+                'address' => $request->address,
+                'city' => $request->city,
+                'province' => $request->province,
+                'zip' => $request->zip,
+                'phone' => $request->phone,
+                'country' => $request->country
+            ];
             $charge = $stripe->charges()->create([
                 'card' => $token['id'],
                 'currency' => 'USD',
                 'amount'   => $request->amount,
                 'description' => 'Add in wallet',
-                'metadata' => [
-                    'name' => $request->name,
-                    'address' => $request->address,
-                    'city' => $request->city,
-                    'province' => $request->province,
-                    'zip' => $request->zip,
-                    'phone' => $request->phone,
-                    'country' => $request->country,
-                ],
+                'metadata' => $data,
             ]);
             if ($charge['status'] == 'succeeded') {
-                return redirect()->route('thank-you', compact([]))->with('success', 'Your order has been successfully placed!');
+                // Shipping::create(['user_id' => $request->user_id]);
+
+                return redirect()->route('thank-you')->with([
+
+                    'success' => 'Your order has been successfully placed!',
+                    'data' => $data,
+                ]);
             } else {
                 return redirect()->route('checkout.index')->with('error', 'Your order has been declined!');
             }

@@ -22,6 +22,7 @@ Route::get('/', function () {
 
 
 
+
 Route::get('/', 'MainController@index')->name('index');
 Route::resource('category', 'CategoryController');
 Route::get('/price/{mix}/{max}', 'PriceController@show')->name('price.show');

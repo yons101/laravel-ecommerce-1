@@ -10,28 +10,28 @@
                 <tbody>
                     <tr>
                         <td>Full Name</td>
-                        <td><input type="text" name="fullname" value="{{ old('fullname') ?? $profile->fullname }}">
+                        <td><input type="text" name="fullname" value="{{ old('fullname') ?? $user->fullname }}">
                         </td>
                     </tr>
                     <tr>
                         <td>Username</td>
                         <td><input type="text" name="username" value="{{ old('username') ?? $user->username }}"></td>
                     </tr>
-                    {{-- <tr>
+                    <tr>
                         <td>Email</td>
-                        <td>{{ $user->email }}</td>
-                    </tr> --}}
+                        <td><input type="text" name="email" value="{{ old('email') ?? $user->email }}"></td>
+                    </tr>
                     <tr>
                         <td>Password</td>
                         <td><input type="text" name="password" value="{{ old('password') ?? $user->password }}"></td>
                     </tr>
                     <tr>
                         <td>Phone Number</td>
-                        <td><input type="text" name="phone" value="{{ old('phone') ?? $profile->phone }}"></td>
+                        <td><input type="text" name="phone" value="{{ old('phone') ?? $user->phone }}"></td>
                     </tr>
                     <tr>
                         <td>Address</td>
-                        <td><input type="text" name="address" value="{{ old('address') ?? $profile->address }}"></td>
+                        <td><input type="text" name="address" value="{{ old('address') ?? $user->address }}"></td>
                     </tr>
                     <tr>
                         <td colspan=" 2"><button class="btn btn-dark w-50 mx-auto d-block" type="submit">Submit</button>

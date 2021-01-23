@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use App\Shipping;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -11,32 +12,18 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = DB::table('users')
-            ->join('orders', 'users.id', 'orders.user_id')
-            ->join('order_product', 'orders.id', 'order_product.order_id')
-            ->join('products', 'products.id',  'order_product.product_id')
-            ->where('users.id',  Auth::user()->id)
-            ->select(
-                'orders.id',
-                'orders.is_shipped',
-                DB::raw('SUM(products.price * order_product.quantity) as price')
-            )
-            ->groupBy(
-                'orders.id',
-                'orders.is_shipped',
-            )
-            ->paginate(5);
-
+        $orders = $this->getOrders();
 
         $i = 0;
+
         return view('orders.index', compact(['orders', 'i']))
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     public function store(Request $request)
     {
-
-        $order = Order::create(['user_id' => $request->user_id]);
+        // dd($request->all());
+        $order = Order::create(['user_id' => Auth::user()->id]);
 
         $products = DB::table('users')
             ->join('carts', 'users.id', 'carts.user_id')
@@ -68,12 +55,20 @@ class OrderController extends Controller
                 'quantity' => $product->quantity,
             ]);
         }
-
+        Shipping::create([
+            'order_id' => $order->id,
+            'fullname' => $request->name,
+            'address' => $request->address,
+            'city' => $request->city,
+            'province' => $request->province,
+            'postal_code' => $request->zip,
+            'phone' => $request->phone,
+            'country' => $request->country
+        ]);
 
         // $products = Auth::user()->cart->products()->get()->groupBy('id');
-        $orders = Auth::user()->orders()->latest()->paginate(5);
+        $orders = $this->getOrders();
         $i = 0;
-
 
         DB::table('carts')
             ->where('user_id', Auth::user()->id)
@@ -90,5 +85,30 @@ class OrderController extends Controller
         $i = 0;
         return view('orders.show', compact(['products', 'i', 'id']))
             ->with('i', (request()->input('page', 1) - 1) * 5);
+    }
+
+
+
+    public function getOrders()
+    {
+
+        $orders = DB::table('users')
+            ->join('orders', 'users.id', 'orders.user_id')
+            ->join('order_product', 'orders.id', 'order_product.order_id')
+            ->join('products', 'products.id',  'order_product.product_id')
+            ->join('shippings', 'orders.id',  'shippings.order_id')
+            ->where('users.id',  Auth::user()->id)
+            ->select(
+                'orders.id',
+                'shippings.is_shipped',
+                DB::raw('SUM(products.price * order_product.quantity) as price')
+            )
+            ->groupBy(
+                'orders.id',
+                'shippings.is_shipped',
+            )
+            ->paginate(5);
+
+        return $orders;
     }
 }

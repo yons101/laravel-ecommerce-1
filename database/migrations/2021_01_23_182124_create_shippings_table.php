@@ -17,7 +17,14 @@ class CreateShippingsTable extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->boolean('is_shipped')->default(0);
-            $table->date('shipped_at');
+            $table->date('shipped_at')->nullable();
+            $table->string('fullname');
+            $table->string('address');
+            $table->string('country');
+            $table->string('city');
+            $table->string('province');
+            $table->string('postal_code');
+            $table->string('phone');
         });
     }
 

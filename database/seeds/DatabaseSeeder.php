@@ -42,49 +42,30 @@ class DatabaseSeeder extends Seeder
 
         DB::table('users')->insert(
             [
-
                 [
                     'username' => 'admin',
                     'password' => '$2y$10$QLDao84rqm4wPIXlWcI6au2lIX4XVgvrSxxYY5KFgonHr6JDpuy6S',
+                    'email' => 'admin@gmail.com',
+                    'fullname' => 'admin admin',
+                    'phone' => '0633221144',
                     'role' => 'admin',
                 ],
                 [
                     'username' => 'test1',
                     'password' => '$2y$10$N57RXskaiaQzgnBTVCwOfOj3oDsfOSJQQp/kKD1WDCYi5FX6K3Daq',
+                    'email' => 'test1@gmail.com',
+                    'fullname' => 'Ahmed Hamada',
+                    'phone' => '0606330508',
                     'role' => 'user',
-
-
                 ],
                 [
                     'username' => 'test2',
                     'password' => '$2y$10$SEAIo7Qo/XSNT/GD9Tym/OT7HlZ9bqsLRK3YWICJCZKoQvaZUSVay',
-                    'role' => 'user',
-
-                ]
-            ]
-        );
-
-
-        DB::table('profiles')->insert(
-            [
-                [
-                    'fullname' => 'admin admin',
-                    'phone' => '0633221144',
-                    'address' => 'Rue 05, Qt X, Ville A',
-                    'user_id' => 1,
-                ],
-                [
-                    'fullname' => 'Ahmed Hamada',
-                    'phone' => '0606330508',
-                    'address' => 'Rue 99, Qt YY, Ville B',
-                    'user_id' => 2,
-                ],
-                [
+                    'email' => 'test2@gmail.com',
                     'fullname' => 'Said Saada',
                     'phone' => '0633221144',
-                    'address' => 'Rue 007, Qt FFF, Ville C',
-                    'user_id' => 3,
-                ],
+                    'role' => 'user',
+                ]
             ]
         );
 
