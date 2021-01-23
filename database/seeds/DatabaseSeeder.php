@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -12,6 +13,31 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+
+        DB::table('categories')->insert(
+            [
+                [
+                    'title' => 'iphone',
+                    'slug' => 'iphone',
+                    'description' => 'iphone description',
+                    'image' => "/img/iphone.png"
+                ],
+                [
+                    'title' => 'ipad',
+                    'slug' => 'ipad',
+                    'description' => 'ipad description',
+                    'image' => "/img/ipad.png"
+                ],
+                [
+                    'title' => 'macbook',
+                    'slug' => 'macbook',
+                    'description' => 'macbook description',
+                    'image' => "/img/macbook.png"
+                ],
+            ]
+        );
+
+
         $this->call(ProductSeeder::class);
 
         DB::table('users')->insert(
@@ -77,12 +103,10 @@ class DatabaseSeeder extends Seeder
                 ],
                 [
                     'user_id' => 1,
-                    'product_id' =>3,
+                    'product_id' => 3,
                     'quantity' => 2,
                 ]
             ]
         );
-
-      
     }
 }

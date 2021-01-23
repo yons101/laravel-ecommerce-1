@@ -21,13 +21,9 @@ Route::get('/', function () {
 });
 
 
-Route::get('/hello', function () {
-    return "hello";
-});
 
 Route::get('/', 'MainController@index')->name('index');
 Route::resource('category', 'CategoryController');
-// Route::resource('cart', 'CartController');
 Route::get('/price/{mix}/{max}', 'PriceController@show')->name('price.show');
 
 Route::get('/products', 'ProductController@index')->name('products.index');
@@ -41,6 +37,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/admin', 'AdminController@index')->name('admin.index');
 
+    Route::resource('categorymanager', 'CategoryManagerController');
     Route::resource('productmanager', 'ProductManagerController');
     Route::resource('usermanager', 'UserManagerController');
     Route::resource('ordermanager', 'OrderManagerController');

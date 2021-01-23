@@ -18,6 +18,7 @@ $factory->define(Product::class, function (Faker $faker) {
         'slug' => "$title-" . $faker->randomNumber(4),
         'price' => $faker->numberBetween(30, 100) * 100,
         'description' => $faker->text(500),
-        'image' => "/img/" . $title . ".png"
+        'image' => "/img/" . $title . ".png",
+        'category_id' => $faker->numberBetween(1, 3),
     ];
 });
