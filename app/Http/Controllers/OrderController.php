@@ -10,20 +10,26 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    //route GET /orders
     public function index()
     {
+        //jib tous les orders dyal lclient
         $orders = $this->getOrders();
 
-        $i = 0;
-
-        return view('orders.index', compact(['orders', 'i']))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+        //afficher lview li kayna fi /resources/views/orders/index.blade.php 
+        //osift lya m3aha les variables 'orders'
+        return view('orders.index', compact(['orders']));
     }
 
+    //route POST /orders
     public function store(Request $request)
     {
+
+        //creer lorder, b ID dyal lclient
         $order = Order::create(['user_id' => Auth::user()->id]);
 
+
+        //jib li lproducts li f la panier o7thom f $products
         $products = DB::table('users')
             ->join('carts', 'users.id', 'carts.user_id')
             ->join('products', 'products.id', 'carts.product_id')
@@ -47,6 +53,13 @@ class OrderController extends Controller
             )
             ->get();
 
+
+        //pour chaque product, radi ndiro lo association m3a l'order
+        //c-a-d les combinaisons dyal order/product
+        //par ex:
+        //order 101, product : 299, quantity : 2
+        //order 101, product : 300, quantity : 1
+        //order 101, product : 301, quantity : 4
         foreach ($products as $product) {
             DB::table('order_product')->insert([
                 'order_id' => $order->id,
@@ -54,6 +67,8 @@ class OrderController extends Controller
                 'quantity' => $product->quantity,
             ]);
         }
+
+        //creer shipping, fin ratwsl sl3a lclient
         Shipping::create([
             'order_id' => $order->id,
             'fullname' => $request->name,
@@ -65,32 +80,39 @@ class OrderController extends Controller
             'country' => $request->country
         ]);
 
-        // $products = Auth::user()->cart->products()->get()->groupBy('id');
+        //jib tous les orders dyal lclient
         $orders = $this->getOrders();
-        $i = 0;
 
+
+        //men ba3d ma dazt la commande, kankhwiw la panier
         DB::table('carts')
             ->where('user_id', Auth::user()->id)
             ->delete();
 
-        return view('orders.index', compact(['orders', 'i']))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+        //afficher lview li kayna fi /resources/views/orders/index.blade.php 
+        //osift lya m3aha les variables 'orders'
+        return view('orders.index', compact(['orders']));
     }
 
 
+    //route GET /orders/{id}
     public function show($id)
     {
+        //jib tous les products li kayntamiw l nafs lorder
+        //c-a-d afficher le contenu dyal lorder
+        //pagination par 5
         $products = Order::findOrFail($id)->products()->latest()->paginate(5);
-        $i = 0;
-        return view('orders.show', compact(['products', 'i', 'id']))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+
+        //afficher lview li kayna fi /resources/views/orders/show.blade.php 
+        //osift lya m3aha les variables 'products'
+        return view('orders.show', compact(['products']));
     }
 
 
-
+    //methode kat retourner tous les orders dyal lclient, et wach t shippaw
+    //pagination par 5
     public function getOrders()
     {
-
         $orders = DB::table('users')
             ->join('orders', 'users.id', 'orders.user_id')
             ->join('order_product', 'orders.id', 'order_product.order_id')

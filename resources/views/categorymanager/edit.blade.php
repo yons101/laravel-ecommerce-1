@@ -36,16 +36,6 @@
         <textarea class="form-control" id="description" rows="3" name="description">{{$category->description}}</textarea>
     </div>
 
-    <div class=" form-group">
-        <label for="price">Price</label>
-        <input type="number" class="form-control" id="price" name="price" value="{{$category->price}}">
-    </div>
-
-    <div class="form-group">
-        <img src="{{$category->image}}" alt="" class="w-25 mb-5">
-        <input type="file" class="form-control-file" id="image" name="image" value="{{$category->image}}">
-    </div>
-
     <button class="btn btn-dark" type="submit">Update category</button>
 
 

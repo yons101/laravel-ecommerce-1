@@ -15,8 +15,10 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class CheckoutController extends Controller
 {
 
+    //route GET /checkout
     public function index()
     {
+        //jib li lproducts li f la panier
         $products = DB::table('users')
             ->join('carts', 'users.id', 'carts.user_id')
             ->join('products', 'products.id', 'carts.product_id')
@@ -40,6 +42,8 @@ class CheckoutController extends Controller
             )
             ->get();
 
+        //jib li quantity dyal chaque produit
+        //jib li total dyal ga3 les produits
         $info =  DB::table('users')
             ->join('carts', 'users.id', 'carts.user_id')
             ->join('products', 'products.id', 'carts.product_id')
@@ -47,24 +51,27 @@ class CheckoutController extends Controller
             ->select(DB::raw('SUM(carts.quantity) as quantity, SUM(products.price * carts.quantity) as totalPrice'))
             ->get();
 
-
+        //la kan luser admin
+        //matbynch lih la panier, hit hwa makaychrich
+        //dir lih redirect l route /productmanager
         if (Auth::user()->role == "admin") {
             return redirect()->route('productmanager.index');
         }
 
-        $lastId = 0;
-
-        return view('checkout', compact(['lastId', 'products', 'info']));
+        //afficher lview li kayna fi /resources/views/checkout.blade.php 
+        //osift lya m3aha les variables 'products', 'info'
+        return view('checkout', compact(['products', 'info']));
     }
 
 
+    //route POST /checkout
     public function store(Request $request)
     {
-        // dd($request->request);
+        //hna kansta3mlo service dtal stripe.com
+        //bach n collectiw $$$
 
-        $validator = Validator::make($request->all(), []);
-        $input = $request->all();
 
+        //validation, tous les chanps sont obligatoire
         $validation = [
             'card_no' => 'required',
             'exp_month' => 'required',
@@ -80,9 +87,14 @@ class CheckoutController extends Controller
             'country' => 'required',
         ];
 
+        //methode pour valider
         $this->validate($request, $validation);
+
+        //lkey dyal stripe, bach t3rf lmen tsift $$$
         $stripe = Stripe::make('sk_test_gKIw0KKS2QV9SPkYvPUoHURc00dTwu0tos');
         try {
+
+            //token
             $token = $stripe->tokens()->create([
                 'card' => [
                     'number'    => $request->get('card_no'),
@@ -92,6 +104,7 @@ class CheckoutController extends Controller
                 ],
             ]);
 
+            //kanjm3o les infos li dkhel lclient
             $data = [
                 'name' => $request->name,
                 'address' => $request->address,
@@ -101,6 +114,8 @@ class CheckoutController extends Controller
                 'phone' => $request->phone,
                 'country' => $request->country
             ];
+
+            //stripe, katakhed $$$ mec la carte dyal lclient
             $charge = $stripe->charges()->create([
                 'card' => $token['id'],
                 'currency' => 'USD',
@@ -108,18 +123,28 @@ class CheckoutController extends Controller
                 'description' => 'Add in wallet',
                 'metadata' => $data,
             ]);
+
+            //fi halat naja7
             if ($charge['status'] == 'succeeded') {
-                // Shipping::create(['user_id' => $request->user_id]);
 
+                //redirect la route 'thank-you'
+                //m3a wahd lmessage temporaire smito 'success'
+                //et $data dyal lclient
                 return redirect()->route('thank-you')->with([
-
                     'success' => 'Your order has been successfully placed!',
                     'data' => $data,
                 ]);
-            } else {
+            }
+            //fi halat lfachal
+            else {
+                //redirect la route 'thank-you'
+                //m3a wahd lmessage temporaire smito 'error'
                 return redirect()->route('checkout.index')->with('error', 'Your order has been declined!');
             }
-        } catch (Exception $e) {
+        }
+
+        //gestion des Exceptions
+        catch (Exception $e) {
             return redirect()->route('checkout.index')->with('error', $e->getMessage());
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             return redirect()->route('checkout.index')->with('error', $e->getMessage());

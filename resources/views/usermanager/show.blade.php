@@ -16,7 +16,7 @@
                     @csrf
                     <tr>
                         <td>Full Name</td>
-                        <td class="text-right">{{ $user->profile->fullname }}</td>
+                        <td class="text-right">{{ $user->fullname }}</td>
                     </tr>
                     <tr>
                         <td>Username</td>
@@ -32,11 +32,7 @@
                     </tr>
                     <tr>
                         <td>Phone Number</td>
-                        <td class="text-right">{{ $user->profile->phone }}</td>
-                    </tr>
-                    <tr>
-                        <td>Address</td>
-                        <td class="text-right">{{ $user->profile->address }}</td>
+                        <td class="text-right">{{ $user->phone }}</td>
                     </tr>
                     <tr>
                         <td colspan="2"><button class="btn btn-dark w-50 mx-auto d-block" type="submit">Edit</button>

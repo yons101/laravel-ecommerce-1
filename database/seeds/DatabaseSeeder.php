@@ -133,6 +133,8 @@ class DatabaseSeeder extends Seeder
                 ]
             ]
         );
+
+        
     }
 
     public function getFaker()

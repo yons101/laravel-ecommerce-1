@@ -28,24 +28,16 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function profile()
-    {
-        return $this->hasone('App\Profile');
-    }
 
+    //chaque user 3ndo panier whda
     public function cart()
     {
         return $this->hasone('App\Cart');
     }
 
+    //chaque user momkin ippasi bzaf d les orders
     public function orders()
     {
         return $this->hasMany('App\Order');
-    }
-
-
-    public function roles()
-    {
-        return $this->belongsToMany('App\Role');
     }
 }

@@ -8,70 +8,61 @@ use Illuminate\Http\Request;
 
 class CategoryManagerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    //page admin
+    //route GET /categorymanager
     public function index()
     {
-
+        //jib les derniers 5 categories
         $categories = Category::latest()->paginate(5);
 
-        return view('categorymanager.index', compact('categories'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+        //afficher lview li kayna fi /resources/views/categorymanager/index.blade.php 
+        //osift lya m3aha les variables 'categories'
+        return view('categorymanager.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+
+    //route GET /categorymanager/create
     public function create()
     {
+        //afficher lview li kayna fi /resources/views/categorymanager/create.blade.php 
         return view('categorymanager.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
+
+    //route POST /categorymanager
     public function store(Request $request)
     {
+        //validation des champs
         $request->validate([
             'title' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-
         ]);
 
-        $slug = Str::replaceArray(' ', ['-'], $request->title) .  '-'  . time();
+        //creer la category
+        Category::create(array_merge($request->all()));
 
-        $imageName = $request->title . '-'  . time()  . '.' . $request->image->getClientOriginalExtension();
-
-        $request->image->move(public_path('img'), $imageName);
-
-        $path = '/img/' . $imageName;
-
-        Category::create(array_merge($request->all(), ['image' => $path]));
-
+        //redirect la route 'GET /categorymanager', m3a wahd lmessage temporaire smito 'success'
         return redirect()->route('categorymanager.index')
             ->with('success', 'Category has been added successfully.');
     }
 
 
 
-
+    //route GET /categorymanager/{id}
     public function edit($id)
     {
-
+        //jib l category li ID = $id
+        //sinon firstOrFail = 404
         $category = Category::where('id', $id)->firstOrFail();
 
+        //afficher lview li kayna fi /resources/views/categorymanager/edit.blade.php 
+        //osift lya m3aha les variables 'category'
         return view('categorymanager.edit', compact('category'));
     }
 
-
+    //route PUT /productmanager/{id}
     public function update(Request $request, $id)
     {
 
@@ -80,36 +71,26 @@ class CategoryManagerController extends Controller
         $request->validate([
             'title' => 'required',
             'description' => 'required',
-            'price' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-
         ]);
+        //update la category
+        $category->update(array_merge($request->all()));
 
-        $slug = Str::replaceArray(' ', ['-'], $request->title) .  '-'  . time();
-
-        $imageName = $request->title . '-'  . time()  . '.' . $request->image->getClientOriginalExtension();
-
-        $request->image->move(public_path('img'), $imageName);
-
-        $path = '/img/' . $imageName;
-
-        $category->update(array_merge($request->all(), ['slug' => $slug, 'image' => $path]));
-
+        //redirect la route 'GET /categorymanager', m3a wahd lmessage temporaire smito 'success'
         return redirect()->route('categorymanager.index')
             ->with('success', 'Category has been updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    //route DELETE /categorymanager/{id}
     public function destroy($id)
     {
+        //jib l category li ID = $id
+        //sinon firstOrFail = 404
         $category = Category::where('id', $id)->firstOrFail();
 
+        //delete the category
+
         $category->delete();
+        //redirect la route 'GET /categorymanager', m3a wahd lmessage temporaire smito 'success'
         return redirect()->route('categorymanager.index')
             ->with('success', 'category has been deleted successfully.');
     }

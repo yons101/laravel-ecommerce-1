@@ -225,15 +225,7 @@
             <tbody>
                 {{-- Products that have the same id, used for quantiy--}}
                 @foreach($products as $item)
-
-
-                @if ($item->id != $lastId)
-
                 <tr>
-                    @php
-                    $lastId = $item->id;
-                    @endphp
-
                     <td class="align-middle">
                         <a href="{{route('products.show', $item->slug)}}" class="text-dark">
                             <img src="{{$item->image}}" alt="" style="width:4rem;">
@@ -253,7 +245,6 @@
                     <td class="align-middle">{{$item->price}} DH</td>
 
                 </tr>
-                @endif
 
 
                 @endforeach

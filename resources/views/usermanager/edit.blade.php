@@ -10,7 +10,7 @@
                 <tbody>
                     <tr>
                         <td>Full Name</td>
-                        <td><input type="text" name="fullname" value="{{ old('fullname') ?? $user->profile->fullname }}">
+                        <td><input type="text" name="fullname" value="{{ old('fullname') ?? $user->fullname }}">
                         </td>
                     </tr>
                     <tr>
@@ -24,11 +24,7 @@
                     </tr>
                     <tr>
                         <td>Phone Number</td>
-                        <td><input type="text" name="phone" value="{{ old('phone') ?? $user->profile->phone }}"></td>
-                    </tr>
-                    <tr>
-                        <td>Address</td>
-                        <td><input type="text" name="address" value="{{ old('address') ?? $user->profile->address }}"></td>
+                        <td><input type="text" name="phone" value="{{ old('phone') ?? $user->phone }}"></td>
                     </tr>
                     <tr>
                         <td colspan=" 2"><button class="btn btn-dark w-50 mx-auto d-block" type="submit">Submit</button>

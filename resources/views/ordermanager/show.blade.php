@@ -29,7 +29,7 @@
                         <td class="text-right">
                             <select name='is_shipped' onchange='this.form.submit()'>
 
-                                @if ($order->is_shipped)
+                                @if ($order->shipping->is_shipped)
                                     <option value="1" selected>Yes</option>
                                     <option value="0">No</option>
                                 @else
@@ -43,15 +43,11 @@
                     </tr>
                     <tr>
                         <td>Buyers Name</td>
-                        <td class="text-right">{{ $order->user->profile->fullname }}</td>
+                        <td class="text-right">{{ $order->user->fullname }}</td>
                     </tr>
                     <tr>
                         <td>Buyer's Phone Number</td>
-                        <td class="text-right">{{ $order->user->profile->phone }}</td>
-                    </tr>
-                    <tr>
-                        <td>Buyer's Address</td>
-                        <td class="text-right">{{ $order->user->profile->address }}</td>
+                        <td class="text-right">{{ $order->user->phone }}</td>
                     </tr>
                 </tbody>
             </table>

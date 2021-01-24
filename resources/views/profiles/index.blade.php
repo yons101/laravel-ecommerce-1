@@ -30,10 +30,6 @@
                         <td><input type="text" name="phone" value="{{ old('phone') ?? $user->phone }}"></td>
                     </tr>
                     <tr>
-                        <td>Address</td>
-                        <td><input type="text" name="address" value="{{ old('address') ?? $user->address }}"></td>
-                    </tr>
-                    <tr>
                         <td colspan=" 2"><button class="btn btn-dark w-50 mx-auto d-block" type="submit">Submit</button>
                         </td>
                     </tr>

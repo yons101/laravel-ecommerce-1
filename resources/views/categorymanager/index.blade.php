@@ -12,13 +12,11 @@
     @if ($categories->isNotEmpty())
         <table class="table table-striped table-bordered">
             <tr class="align-middle text-center">
-                <th>Image</th>
                 <th>Title</th>
                 <th>Action</th>
             </tr>
             @foreach ($categories as $category)
                 <tr>
-                    <td class="align-middle text-center w-25"><img src="{{ $category->image }}" class="w-25"></td>
                     <td class="align-middle text-center ">{{ $category->title }}</td>
                     <td class="align-middle text-center w-50">
                         <form action="{{ route('categorymanager.destroy', $category->id) }}" method="POST">
