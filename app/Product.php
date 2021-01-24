@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $guarded = [];
-    
+
     public function carts()
     {
         return $this->belongsToMany('App\Cart');
@@ -16,5 +16,10 @@ class Product extends Model
     public function orders()
     {
         return $this->belongsToMany('App\Order');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

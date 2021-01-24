@@ -3,43 +3,86 @@
 use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
+
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
+
     public function run()
     {
+        $faker = $this->getFaker();
 
+        //create categories
         DB::table('categories')->insert(
             [
                 [
                     'title' => 'iphone',
                     'slug' => 'iphone',
-                    'description' => 'iphone description',
+                    'description' => "The iPhone is a line of smartphones designed and marketed by Apple Inc",
                     'image' => "/img/iphone.png"
                 ],
                 [
                     'title' => 'ipad',
                     'slug' => 'ipad',
-                    'description' => 'ipad description',
+                    'description' => "iPad is a line of tablet computers designed, developed and marketed by Apple Inc., which run the iOS and iPadOS mobile operating systems.",
                     'image' => "/img/ipad.png"
                 ],
                 [
                     'title' => 'macbook',
                     'slug' => 'macbook',
-                    'description' => 'macbook description',
+                    'description' => "The MacBook is a brand of Macintosh laptop computers designed and marketed by Apple Inc. that use Apple's macOS operating system.",
                     'image' => "/img/macbook.png"
                 ],
             ]
         );
 
+        //create products
+        for ($i = 0; $i < 50; $i++) {
+            $title = Arr::random(['iphone-x', 'iphone-xs', 'iphone-11']);
+            DB::table('products')->insert(
+                [
+                    [
+                        'title' => $title,
+                        'slug' => "$title-" . $faker->randomNumber(4),
+                        'price' => $faker->numberBetween(30, 100) * 100,
+                        'description' => $faker->text(500),
+                        'image' => "/img/" . $title . ".png",
+                        'category_id' => 1,
+                    ]
+                ]
+            );
+            $title = Arr::random(['ipad-air', 'ipad-pro']);
 
-        $this->call(ProductSeeder::class);
+            DB::table('products')->insert(
+                [
+                    [
+                        'title' => $title,
+                        'slug' => "$title-" . $faker->randomNumber(4),
+                        'price' => $faker->numberBetween(30, 100) * 100,
+                        'description' => $faker->text(500),
+                        'image' => "/img/" . $title . ".png",
+                        'category_id' => 2,
+                    ]
+                ]
+            );
+            $title = Arr::random(['macbook-pro', 'macbook-air']);
 
+            DB::table('products')->insert(
+                [
+                    [
+                        'title' => $title,
+                        'slug' => "$title-" . $faker->randomNumber(4),
+                        'price' => $faker->numberBetween(30, 100) * 100,
+                        'description' => $faker->text(500),
+                        'image' => "/img/" . $title . ".png",
+                        'category_id' => 3,
+                    ]
+                ]
+            );
+        }
+
+        //create users
         DB::table('users')->insert(
             [
                 [
@@ -69,6 +112,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        //create carts
         DB::table('carts')->insert(
             [
                 [
@@ -89,5 +133,13 @@ class DatabaseSeeder extends Seeder
                 ]
             ]
         );
+    }
+
+    public function getFaker()
+    {
+        if (empty($this->faker)) {
+            $faker = Faker::create();
+        }
+        return $this->faker = $faker;
     }
 }

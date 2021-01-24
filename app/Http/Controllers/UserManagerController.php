@@ -8,14 +8,9 @@ use Illuminate\Http\Request;
 
 class UserManagerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-
         $users = User::latest()->paginate(5);
 
         return view('usermanager.index', compact('users'))
@@ -57,12 +52,7 @@ class UserManagerController extends Controller
         return redirect()->route('usermanager.index')->with('success', 'Your Profile Has Been Updated Successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         $user = User::where('id', $id)->firstOrFail();

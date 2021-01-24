@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use App\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     public function show($title)
     {
-        $products = Product::where('title', 'like', "%$title%")->latest()->paginate(12);
+        $description = Category::where('title', 'like', "%$title%")->first()->description;
 
-        return view('products.index', compact(['products', 'title']))
-            ->with((request()->input('page', 1) - 1) * 12);
+        $products = Category::where('title', 'like', "%$title%")->first()->products()->paginate(12);
+
+        return view('products.index', compact(['products', 'title', 'description']))->with((request()->input('page', 1) - 1) * 12);
     }
 }
